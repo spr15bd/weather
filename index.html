@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+	<style>
+		body {  
+  			margin: 0;  
+		}
+		h1, h2, #author, .temp{
+  			text-align: center;
+		}
+		#author {
+  			padding-top: 2%;
+		}
+		img {
+  			margin: auto;
+  			display: block;
+  			width: 4%;
+		}
+		b {
+  			color:black;
+		}
+		.amount, .centFahr {
+  			display: inline-block;
+  
+		}
+		.container-fluid {
+  			padding-top:4%;
+  			background-image: url("https://wtjszw-db3pap001.files.1drv.com/y4mmm8aVC-e4SXfXHk9u1YXCutJi0NJiXJDoxovE_wc9KmyAwPKkaTm4xM6V6pGAfOHj8b_C1e_dglxrlHj-lT9Nl5l8AdLnynMcgFDkrKG5X816Wr2SRkW4QyVGpzkABydd1N_VT2zlBibxxjD5cm2BWiaV92vaUNF0KRgDzrgWU4hYKtVGMrKPVKE2gPkJvbBkMThm0YPncl7OVpCyE8l4Q?width=1920&height=1080&cropmode=none");
+  			background-size:cover;
+  			height:1080px;
+  			font-family: helvetica;
+  			color: rgb(255,255,200);
+		}
+	</style>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			// Global variables
+			var celciusDisplayed=true;
+			var celciusTemp, fahrenheitTemp;
+			var weatherIcon;
+			function getPosition(){
+  				if (navigator.geolocation){
+    					navigator.geolocation.getCurrentPosition(getWeather);
+  				} else {
+    					alert("Sorry this browser doesn't support geolocation");
+  				}
+			}
+			function getWeather(position){
+  				var latitude = position.coords.latitude;
+  				var longitude = position.coords.longitude;
+  				$.getJSON("https://fcc-weather-api.glitch.me/api/current?lat="+latitude+"&lon="+longitude, function(json){
+    					celciusTemp=json.main.temp;
+    					fahrenheitTemp=convertToF(json.main.temp);
+    					$(".amount").text(Math.round(celciusTemp*10)/10+"°");
+    					$(".main").text(json.weather[0].main);  
+    					$(".desc").text(json.weather[0].description);
+    					weatherIcon=json.weather[0].icon;
+    					$(".weatherImage").attr("src", weatherIcon);
+  				}); 
+			}
+			function convertToF(celsius) {
+  				var fahrenheit;
+  				fahrenheit = celsius*(9/5)+32;
+  				return fahrenheit;
+			}
+
+			$(document).ready(function(){
+    				getPosition();
+    				$("b").click(function(){
+        				if (celciusDisplayed){
+          					$(".amount").text(Math.round(fahrenheitTemp*10)/10+"°");
+          					$("b").text("F");
+          					celciusDisplayed=false;
+        				} else {
+          					$(".amount").text(Math.round(celciusTemp*10)/10+"°");
+          					$("b").text("C");
+          					celciusDisplayed=true;
+        				}
+    				});
+    				$("b").hover(function() {
+      					$("b").css("cursor", "pointer");
+      					$("b").css("color", "yellow");
+    				});
+  				$("b").mouseleave(function() {
+      					$("b").css("cursor", "pointer");
+      					$("b").css("color", "black");
+    				});
+			}); 
+		</script>
+		<div class="container-fluid">
+  			<div>
+    				<h1>FreeCodeCamp</h1>
+  			</div>
+  			<div>
+    			<h1>Weather App</h1>
+  			</div>
+ 			<div class="temp">
+    				<div class="amount">
+      					10.5
+    				</div>
+    				<div class="centFahr">
+      					<b>C</b>
+    				</div>
+  			</div>
+  			<div>
+  
+  			</div>
+  			<div>
+    				<h2 class="main">Clouds</h2>
+  			</div>
+  			<div>
+    				<h2 class="desc">broken clouds</h2>
+  			</div>
+  			<div>
+    				<img class="weatherImage" src="https://h1443g-db3pap001.files.1drv.com/y4mTSR7QMTnB6w_wzw3zsMFMdQlj4g1Y3OHAfz6-5tF49BtX6kVlqAEjMv87b1rPmR5B1ZrTS5KuVWifbIW8glqVBcP-2lczSlSYnIyGCRjmqcGE5ukM4xTQQAX12kslLVprPArtNsdiSj0g_iA-HI8hNB8AOOIZ1NV0qlGs3Zl2fHNSJukWjOochgKz3Ao6cJI5MTcEqspxs0s8OminIHxOA?width=64&height=64&cropmode=none"/>
+    			</div>
+  			<div>
+    				<div id="author">Coded by Bev Dady</div>
+  			</div>
+		</div>
+	</body>
+</html>
